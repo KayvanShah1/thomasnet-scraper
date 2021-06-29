@@ -115,9 +115,12 @@ class ThomasnetMetaDataScraper:
                     card_data["url"] = "https://www.thomasnet.com" + header.find(
                         "h2", class_="profile-card__title"
                     ).find("a").get("href")
-                    card_data["telephone"] = sup.find(
-                        "a", {"data-conversion_action": "Call"}
-                    ).get("href")
+                    try:
+                        card_data["telephone"] = sup.find(
+                            "a", {"data-conversion_action": "Call"}
+                        ).get("href")
+                    except:
+                        pass
 
                     sup_data = sup.find("div", class_="profile-card__supplier-data")
                     card_data["location"] = (
@@ -148,12 +151,18 @@ class ThomasnetMetaDataScraper:
                         pass
 
                     content = sup.find("div", class_="profile-card__content")
-                    card_data["description"] = content.findAll("p")[0].text.strip()
-                    card_data["company_url"] = (
-                        content.find("p", {"class": "profile-card_web-link-wrap"})
-                        .find("a")
-                        .get("href")
-                    )
+                    try:
+                        card_data["description"] = content.findAll("p")[0].text.strip()
+                    except:
+                        pass
+                    try:
+                        card_data["company_url"] = (
+                            content.find("p", {"class": "profile-card_web-link-wrap"})
+                            .find("a")
+                            .get("href")
+                        )
+                    except:
+                        pass
                     try:
                         card_data["brands"] = content.find(
                             "p", {"class": "profile-card__brands__body"}
@@ -189,7 +198,7 @@ class ThomasnetMetaDataScraper:
         list_of_payloads = self.generate_payload(num_pages, self.config["keyword"])
         try:
             pool = Pool(processes=10)
-            final_result = pool.map(self.extract_data, list_of_payloads[3])
+            final_result = pool.map(self.extract_data, list_of_payloads)
             for result in final_result:
                 if result["success"]:
                     self.collected_data.extend(result["page_data"])
