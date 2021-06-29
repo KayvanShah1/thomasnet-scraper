@@ -199,8 +199,7 @@ class ThomasnetMetaDataScraper:
                 traceback.print_exc(),
             )
         finally:
-            # self.save_data()
-            pass
+            self.save_data()
 
 
 if __name__ == "__main__":
