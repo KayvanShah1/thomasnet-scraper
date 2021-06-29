@@ -21,8 +21,8 @@ class ThomasnetMetaDataScraper:
             "cov": "NA",
             "heading": self.config['heading'],
             "searchsource": "suppliers",
-            "searchterm": self.config['heading'],
-            "what": self.config['heading'],
+            "searchterm": self.config['keyword'],
+            "what": self.config['keyword'],
             "pg": 1
         }
         self.collected_data = []
@@ -140,7 +140,13 @@ class ThomasnetMetaDataScraper:
 
 
     def save_data(self):
-        self.metadata = pd.DataFrame(self.collected_data)
+        if not os.path.exists(self.config['saving_path']):
+            os.makedirs(os.path.dirname(self.config['saving_path']))
+        try:
+            self.metadata = pd.DataFrame(self.collected_data)
+            self.metadata.to_csv(self.config['saving_path'],index=False)
+        except Exception as e:
+            print(f"Error encountered saving metadata:\n\t{e}")
 
 
     def run(self):
@@ -162,7 +168,7 @@ if __name__ =='__main__':
     config = {
         "keyword": "hydraulic cylinders",
         "heading": 21650809,
-        "saving_path": "data/hydraulic_cylinders/metadata.csv"
+        "saving_path": "data/hydraulic_cylinders/hydraulic_cylinders_suppliers_metadata.csv"
     }
     scraper = ThomasnetMetaDataScraper(
         config=config
