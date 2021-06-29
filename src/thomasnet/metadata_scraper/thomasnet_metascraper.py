@@ -216,6 +216,7 @@ if __name__ == "__main__":
         "keyword": "hydraulic cylinders",
         "heading": 21650809,
         "saving_path": "data/hydraulic_cylinders/hydraulic_cylinders_suppliers_metadata.csv",
+        "reference_url_list": "data/hydraulic_cylinders/hydraulic_cylinders_suppliers_urls.csv"
     }
     scraper = ThomasnetMetaDataScraper(config=config)
     scraper.run()
