@@ -85,7 +85,6 @@ class ThomasnetMetaDataScraper:
 
         try:
             soup = get_html(payload)
-            print(payload)
             suppliers_list = []
             suppliers = soup.findAll("div", class_="supplier-search-results__card")
             for sup in suppliers:
@@ -201,7 +200,7 @@ class ThomasnetMetaDataScraper:
             )
         finally:
             # self.save_data()
-            print(self.metadata)
+            pass
 
 
 if __name__ == "__main__":
