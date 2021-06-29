@@ -1,11 +1,10 @@
-import os, re, time
+import os, time
 import traceback
 
 import requests
 from bs4 import BeautifulSoup
 
 import math
-import numpy as np
 import pandas as pd
 import warnings
 
