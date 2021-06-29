@@ -26,6 +26,7 @@ class ThomasnetMetaDataScraper:
             "pg": 1
         }
         self.collected_data = []
+        self.metadata = None
 
 
     def find_num_pages(self,payload):
@@ -40,11 +41,12 @@ class ThomasnetMetaDataScraper:
 
         number_of_pages = math.ceil(float(total_suppliers)/float(n_suppliers))
         print(f"Total Pages: {number_of_pages}")
+        return number_of_pages
 
 
-    def generate_payload(self, page_num: int, keyword: str):
+    def generate_payload(self, num_pages:int, keyword:str):
         payloads = []
-        for i in range(page_num):
+        for i in range(num_pages):
             payload = {
                 "cov": "NA",
                 "heading": self.config['heading'],
@@ -60,12 +62,15 @@ class ThomasnetMetaDataScraper:
     @staticmethod
     def extract_data(payload):
         BASE_URL = "https://www.thomasnet.com/nsearch.html"
-        def get_html(params):
+        def get_html(param):
             passed = False
             retry = 0
             while not passed:
                 try:
-                    page = BeautifulSoup(requests.get(BASE_URL,params=params).text,'lxml')
+                    page = BeautifulSoup(
+                        requests.get(BASE_URL,params=param).text,
+                        'lxml'
+                    )
                     passed = True
                     return page
                 except Exception as e:
@@ -78,6 +83,7 @@ class ThomasnetMetaDataScraper:
                         pass
         try:
             soup = get_html(payload)
+            print(payload)
             suppliers_list = []
             suppliers = soup.findAll('div',class_="supplier-search-results__card")
             for sup in suppliers:
@@ -133,6 +139,7 @@ class ThomasnetMetaDataScraper:
                     pass
 
             result = {"page_data": suppliers_list, "success": True}
+            print(f"Successfully scraped page {payload['pg']}")
         except Exception as e:
             print(f"Error encountered scraping page {payload['pg']}:\n{e}")
         finally:
@@ -151,17 +158,18 @@ class ThomasnetMetaDataScraper:
 
     def run(self):
         num_pages = self.find_num_pages(self.base_payload)
-        list_of_payloads = self.generate_payload(self.config['keyword'],num_pages)
+        list_of_payloads = self.generate_payload(num_pages,self.config['keyword'])
         try:
-            pool = Pool(processes=15)
-            final_result = pool.map(self.extract_data, list_of_payloads)
+            pool = Pool(processes=10)
+            final_result = pool.map(self.extract_data, list_of_payloads[3])
             for result in final_result:
                 if result["success"]:
                     self.collected_data.extend(result["page_data"])
         except Exception as e:
             print(f"Error occurred. Closing scraping process.\n{str(e)}", traceback.print_exc())
         finally:
-            self.save_data()
+            # self.save_data()
+            print(self.metadata)
 
 
 if __name__ =='__main__':
