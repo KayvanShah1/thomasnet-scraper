@@ -110,9 +110,12 @@ class ThomasnetMetaDataScraper:
                     card_data["url"] = "https://www.thomasnet.com" + header.find(
                         "h2", class_="profile-card__title"
                     ).find("a").get("href")
-                    card_data["telephone"] = sup.find(
-                        "a", {"data-conversion_action": "Call"}
-                    ).get("href")
+                    try:
+                        card_data["telephone"] = sup.find(
+                            "a", {"data-conversion_action": "Call"}
+                        ).get("href")
+                    except:
+                        pass
 
                     sup_data = sup.find("div", class_="profile-card__supplier-data")
                     card_data["location"] = (
@@ -180,6 +183,7 @@ class ThomasnetMetaDataScraper:
         try:
             self.metadata = pd.DataFrame(self.collected_data)
             self.metadata.to_csv(self.config["saving_path"], index=False)
+            print(f"Successfully saved metadata at {self.config['saving_path']}")
         except Exception as e:
             print(f"Error encountered saving metadata:\n\t{e}")
 
@@ -195,8 +199,7 @@ class ThomasnetMetaDataScraper:
                 traceback.print_exc(),
             )
         finally:
-            # self.save_data()
-            pass
+            self.save_data()
 
 
 if __name__ == "__main__":
