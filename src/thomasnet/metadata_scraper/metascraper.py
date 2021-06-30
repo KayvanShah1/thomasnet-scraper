@@ -9,6 +9,7 @@ from bs4 import BeautifulSoup
 import math
 import pandas as pd
 import warnings
+
 warnings.simplefilter(action="ignore")
 
 
@@ -59,7 +60,7 @@ class ThomasnetMetaDataScraper:
             payloads.append(payload)
         return payloads
 
-    def get_html(self,payload):
+    def get_html(self, payload):
         passed = False
         retry = 0
         while not passed:
@@ -78,7 +79,7 @@ class ThomasnetMetaDataScraper:
                     time.sleep(5)
                     pass
 
-    def extract_data(self,payload):
+    def extract_data(self, payload):
         try:
             soup = self.get_html(payload)
             suppliers_list = []
@@ -183,8 +184,8 @@ class ThomasnetMetaDataScraper:
             self.metadata.to_csv(path["saving_path"], index=False)
             print(f"Successfully saved metadata at {path['saving_path']}")
 
-            ref_urls = self.metadata.loc[:,['company_id','url']]
-            ref_urls.to_csv(path['reference_url_path'], index=False)
+            ref_urls = self.metadata.loc[:, ["company_id", "url"]]
+            ref_urls.to_csv(path["reference_url_path"], index=False)
             print(f"Successfully saved URLs at {path['reference_url_path']}")
         except Exception as e:
             print(f"Error encountered saving metadata:\n\t{e}")
@@ -210,8 +211,8 @@ if __name__ == "__main__":
         "heading": 21650809,
         "paths": {
             "saving_path": "data/hydraulic_cylinders/hydraulic_cylinders_suppliers_metadata.csv",
-            "reference_url_path": "data/hydraulic_cylinders/hydraulic_cylinders_suppliers_urls.csv"
-        }
+            "reference_url_path": "data/hydraulic_cylinders/hydraulic_cylinders_suppliers_urls.csv",
+        },
     }
     scraper = ThomasnetMetaDataScraper(config=config)
     scraper.run()

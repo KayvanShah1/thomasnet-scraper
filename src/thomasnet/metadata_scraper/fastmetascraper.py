@@ -5,12 +5,12 @@ import traceback
 import requests
 from bs4 import BeautifulSoup
 
+from multiprocessing import Pool
 import math
 import pandas as pd
 import warnings
-warnings.simplefilter(action="ignore")
 
-from multiprocessing import Pool
+warnings.simplefilter(action="ignore")
 
 
 class ThomasnetFastMetaDataScraper:
@@ -193,8 +193,8 @@ class ThomasnetFastMetaDataScraper:
             self.metadata.to_csv(path["saving_path"], index=False)
             print(f"Successfully saved metadata at {path['saving_path']}")
 
-            ref_urls = self.metadata.loc[:,['company_id','url']]
-            ref_urls.to_csv(path['reference_url_path'], index=False)
+            ref_urls = self.metadata.loc[:, ["company_id", "url"]]
+            ref_urls.to_csv(path["reference_url_path"], index=False)
             print(f"Successfully saved URLs at {path['reference_url_path']}")
         except Exception as e:
             print(f"Error encountered saving metadata:\n\t{e}")
@@ -223,8 +223,8 @@ if __name__ == "__main__":
         "heading": 21650809,
         "paths": {
             "saving_path": "data/hydraulic_cylinders/hydraulic_cylinders_suppliers_metadata.csv",
-            "reference_url_path": "data/hydraulic_cylinders/hydraulic_cylinders_suppliers_urls.csv"
-        }
+            "reference_url_path": "data/hydraulic_cylinders/hydraulic_cylinders_suppliers_urls.csv",
+        },
     }
     scraper = ThomasnetFastMetaDataScraper(config=config)
     scraper.run()
