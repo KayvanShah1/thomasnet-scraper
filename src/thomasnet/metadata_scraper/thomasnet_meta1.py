@@ -1,5 +1,6 @@
 import os, time
 import traceback
+from tqdm import tqdm
 
 import requests
 from bs4 import BeautifulSoup
@@ -7,10 +8,7 @@ from bs4 import BeautifulSoup
 import math
 import pandas as pd
 import warnings
-
 warnings.simplefilter(action="ignore")
-
-from multiprocessing import Pool
 
 
 class ThomasnetMetaDataScraper:
@@ -60,31 +58,28 @@ class ThomasnetMetaDataScraper:
             payloads.append(payload)
         return payloads
 
-    @staticmethod
-    def extract_data(payload):
-        BASE_URL = "https://www.thomasnet.com/nsearch.html"
+    def get_html(self,payload):
+        passed = False
+        retry = 0
+        while not passed:
+            try:
+                page = BeautifulSoup(
+                    requests.get(self.BASE_URL, params=payload).text, "lxml"
+                )
+                passed = True
+                return page
+            except Exception as e:
+                retry = retry + 1
+                print(f"Retrying {retry}/5 times...")
+                if retry == 5:
+                    break
+                else:
+                    time.sleep(5)
+                    pass
 
-        def get_html(param):
-            passed = False
-            retry = 0
-            while not passed:
-                try:
-                    page = BeautifulSoup(
-                        requests.get(BASE_URL, params=param).text, "lxml"
-                    )
-                    passed = True
-                    return page
-                except Exception as e:
-                    retry = retry + 1
-                    print(f"Retrying {retry}/5 times...")
-                    if retry == 5:
-                        break
-                    else:
-                        time.sleep(5)
-                        pass
-
+    def extract_data(self,payload):
         try:
-            soup = get_html(payload)
+            soup = self.get_html(payload)
             suppliers_list = []
             suppliers = soup.findAll("div", class_="supplier-search-results__card")
             for sup in suppliers:
@@ -103,7 +98,6 @@ class ThomasnetMetaDataScraper:
                     "telephone": "",
                     "searchterm": payload["searchterm"],
                 }
-                result = {"page_data": [card_data], "success": False}
                 try:
                     header = sup.find("header", class_="profile-card__header")
                     card_data["company_id"] = eval(sup.get("data-impression-tracking"))[
@@ -177,12 +171,10 @@ class ThomasnetMetaDataScraper:
                     )
                     pass
 
-            result = {"page_data": suppliers_list, "success": True}
             print(f"Successfully scraped page {payload['pg']}")
+            self.collected_data.extend(suppliers_list)
         except Exception as e:
             print(f"Error encountered scraping page {payload['pg']}:\n{e}")
-        finally:
-            return result
 
     def save_data(self):
         if not os.path.exists(self.config["saving_path"]):
@@ -190,6 +182,7 @@ class ThomasnetMetaDataScraper:
         try:
             self.metadata = pd.DataFrame(self.collected_data)
             self.metadata.to_csv(self.config["saving_path"], index=False)
+            print(f"Successfully saved metadata at {self.config['saving_path']}")
         except Exception as e:
             print(f"Error encountered saving metadata:\n\t{e}")
 
@@ -197,11 +190,8 @@ class ThomasnetMetaDataScraper:
         num_pages = self.find_num_pages(self.base_payload)
         list_of_payloads = self.generate_payload(num_pages, self.config["keyword"])
         try:
-            pool = Pool(processes=10)
-            final_result = pool.map(self.extract_data, list_of_payloads)
-            for result in final_result:
-                if result["success"]:
-                    self.collected_data.extend(result["page_data"])
+            for pl in tqdm(list_of_payloads):
+                self.extract_data(pl)
         except Exception as e:
             print(
                 f"Error occurred. Closing scraping process.\n{str(e)}",
@@ -216,7 +206,6 @@ if __name__ == "__main__":
         "keyword": "hydraulic cylinders",
         "heading": 21650809,
         "saving_path": "data/hydraulic_cylinders/hydraulic_cylinders_suppliers_metadata.csv",
-        "reference_url_list": "data/hydraulic_cylinders/hydraulic_cylinders_suppliers_urls.csv"
     }
     scraper = ThomasnetMetaDataScraper(config=config)
     scraper.run()
