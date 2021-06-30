@@ -1,5 +1,5 @@
 import time
-import pathlib, os
+import os
 import traceback
 from tqdm import tqdm
 
@@ -176,12 +176,17 @@ class ThomasnetMetaDataScraper:
             print(f"Error encountered scraping page {payload['pg']}:\n{e}")
 
     def save_data(self):
-        if not os.path.exists(self.config["saving_path"]):
-            os.makedirs(os.path.dirname(self.config["saving_path"]))
+        path = self.config["paths"]
+        if not os.path.exists(os.path.dirname(path["saving_path"])):
+            os.makedirs(os.path.dirname(path["saving_path"]))
         try:
             self.metadata = pd.DataFrame(self.collected_data)
-            self.metadata.to_csv(self.config["saving_path"], index=False)
-            print(f"Successfully saved metadata at {self.config['saving_path']}")
+            self.metadata.to_csv(path["saving_path"], index=False)
+            print(f"Successfully saved metadata at {path['saving_path']}")
+
+            ref_urls = self.metadata.loc[:,['company_id','url']]
+            ref_urls.to_csv(path['reference_url_path'], index=False)
+            print(f"Successfully saved URLs at {path['reference_url_path']}")
         except Exception as e:
             print(f"Error encountered saving metadata:\n\t{e}")
 
@@ -204,7 +209,10 @@ if __name__ == "__main__":
     config = {
         "keyword": "hydraulic cylinders",
         "heading": 21650809,
-        "saving_path": "data/dummy.csv",
+        "paths": {
+            "saving_path": "data/hydraulic_cylinders/hydraulic_cylinders_suppliers_metadata.csv",
+            "reference_url_path": "data/hydraulic_cylinders/hydraulic_cylinders_suppliers_urls.csv"
+        }
     }
     scraper = ThomasnetMetaDataScraper(config=config)
     scraper.run()
