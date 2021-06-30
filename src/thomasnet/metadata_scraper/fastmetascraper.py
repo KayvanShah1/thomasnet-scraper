@@ -12,7 +12,7 @@ warnings.simplefilter(action="ignore")
 from multiprocessing import Pool
 
 
-class ThomasnetMetaDataScraper:
+class ThomasnetFastMetaDataScraper:
     def __init__(self, **kwargs):
         self.config = kwargs.get("config")
         self.BASE_URL = "https://www.thomasnet.com/nsearch.html"
@@ -217,5 +217,5 @@ if __name__ == "__main__":
         "saving_path": "data/hydraulic_cylinders/hydraulic_cylinders_suppliers_metadata.csv",
         "reference_url_list": "data/hydraulic_cylinders/hydraulic_cylinders_suppliers_urls.csv"
     }
-    scraper = ThomasnetMetaDataScraper(config=config)
+    scraper = ThomasnetFastMetaDataScraper(config=config)
     scraper.run()
