@@ -1,4 +1,5 @@
-import os, time
+import time
+import pathlib, os
 import traceback
 from tqdm import tqdm
 
@@ -170,8 +171,6 @@ class ThomasnetMetaDataScraper:
                         traceback.print_exc(),
                     )
                     pass
-
-            print(f"Successfully scraped page {payload['pg']}")
             self.collected_data.extend(suppliers_list)
         except Exception as e:
             print(f"Error encountered scraping page {payload['pg']}:\n{e}")
@@ -205,7 +204,7 @@ if __name__ == "__main__":
     config = {
         "keyword": "hydraulic cylinders",
         "heading": 21650809,
-        "saving_path": "data/hydraulic_cylinders/hydraulic_cylinders_suppliers_metadata.csv",
+        "saving_path": "data/dummy.csv",
     }
     scraper = ThomasnetMetaDataScraper(config=config)
     scraper.run()
