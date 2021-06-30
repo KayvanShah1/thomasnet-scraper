@@ -170,7 +170,6 @@ class ThomasnetMetaDataScraper:
                         "Error encountered while extraction of data\n",
                         traceback.print_exc(),
                     )
-                    pass
             self.collected_data.extend(suppliers_list)
         except Exception as e:
             print(f"Error encountered scraping page {payload['pg']}:\n{e}")
