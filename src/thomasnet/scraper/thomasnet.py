@@ -24,12 +24,9 @@ class ThomasnetScraper:
         self.collected_data = []
 
     def get_scraping_list_df(self):
-        scraping_list = list(
-            set([tuple(row) for row in self.ref_urls_df.values.tolist()])
-            .difference(set([tuple(row) for row in self.failed_urls.values.tolist()]))
-            .difference(set([tuple(row) for row in self.success_urls.values.tolist()]))
-        )
-        return pd.DataFrame(scraping_list, columns=self.data_columns)
+        df = self.ref_urls_df.append(self.failed_urls)
+        df = df[~df["company_id"].isin(self.success_urls.company_id.tolist())]
+        return df.drop_duplicates(subset=["company_id"])
 
     def add_to_collected_data(self, page_data):
         if type(page_data) == dict:
@@ -94,24 +91,18 @@ class ThomasnetScraper:
             page = requests.get(row[1]).text
             soup = BeautifulSoup(page, "lxml")
             gen_info = soup.find("div", {"class": "copro_naft"})
-            try:
-                page_data["company_name"] = (
-                    gen_info.find("div", {"class": "codetail"})
-                    .find("h1")
-                    .find("a")
-                    .text.strip()
-                )
-            except Exception as e:
-                pass
-            try:
-                page_data["company_url"] = (
-                    gen_info.find("div", {"class": "codetail"})
-                    .find("h1")
-                    .find("a")
-                    .get("href")
-                )
-            except Exception as e:
-                pass
+            page_data["company_name"] = (
+                gen_info.find("div", {"class": "codetail"})
+                .find("h1")
+                .find("a")
+                .text.strip()
+            )
+            page_data["company_url"] = (
+                gen_info.find("div", {"class": "codetail"})
+                .find("h1")
+                .find("a")
+                .get("href")
+            )
             try:
                 page_data["company_type"] = (
                     gen_info.find("div", {"class": "codetail"})
@@ -290,12 +281,12 @@ class ThomasnetScraper:
                 success_urls_path=self.config["paths"]["success_url_path"],
                 failed_urls_path=self.config["paths"]["failed_url_path"],
             )
-
             for _, row in tqdm(
                 self.scraping_list_df.iterrows(), total=self.scraping_list_df.shape[0]
             ):
                 self.extract_data(row)
-
+            # for row in tqdm(self.scraping_list_df.values.tolist()[:10]):
+            #     self.extract_data(row)
         except Exception as e:
             print(
                 traceback.print_exc(),
@@ -307,6 +298,8 @@ class ThomasnetScraper:
                 success_urls_path=self.config["paths"]["success_url_path"],
                 failed_urls_path=self.config["paths"]["failed_url_path"],
             )
+            # return self.master_df
+            # pass
 
 
 if __name__ == "__main__":
