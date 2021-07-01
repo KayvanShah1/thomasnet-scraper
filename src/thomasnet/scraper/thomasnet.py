@@ -91,18 +91,24 @@ class ThomasnetScraper:
             page = requests.get(row[1]).text
             soup = BeautifulSoup(page, "lxml")
             gen_info = soup.find("div", {"class": "copro_naft"})
-            page_data["company_name"] = (
-                gen_info.find("div", {"class": "codetail"})
-                .find("h1")
-                .find("a")
-                .text.strip()
-            )
-            page_data["company_url"] = (
-                gen_info.find("div", {"class": "codetail"})
-                .find("h1")
-                .find("a")
-                .get("href")
-            )
+            try:
+                page_data["company_name"] = (
+                    gen_info.find("div", {"class": "codetail"})
+                    .find("h1")
+                    .find("a")
+                    .text.strip()
+                )
+            except Exception as e:
+                pass
+            try:
+                page_data["company_url"] = (
+                    gen_info.find("div", {"class": "codetail"})
+                    .find("h1")
+                    .find("a")
+                    .get("href")
+                )
+            except Exception as e:
+                pass
             try:
                 page_data["company_type"] = (
                     gen_info.find("div", {"class": "codetail"})
@@ -285,8 +291,6 @@ class ThomasnetScraper:
                 self.scraping_list_df.iterrows(), total=self.scraping_list_df.shape[0]
             ):
                 self.extract_data(row)
-            # for row in tqdm(self.scraping_list_df.values.tolist()[:10]):
-            #     self.extract_data(row)
         except Exception as e:
             print(
                 traceback.print_exc(),
@@ -298,8 +302,6 @@ class ThomasnetScraper:
                 success_urls_path=self.config["paths"]["success_url_path"],
                 failed_urls_path=self.config["paths"]["failed_url_path"],
             )
-            # return self.master_df
-            # pass
 
 
 if __name__ == "__main__":
