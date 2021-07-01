@@ -91,41 +91,63 @@ class ThomasnetScraper:
             "url": row[1],
         }
         try:
-            soup = self.get_response(row[0])
+            page = requests.get(row[1]).text
+            soup = BeautifulSoup(page, "lxml")
             gen_info = soup.find("div", {"class": "copro_naft"})
-            page_data["company_name"] = (
-                gen_info.find("div", {"class": "codetail"})
-                .find("h1")
-                .find("a")
-                .text.strip()
-            )
-            page_data["company_url"] = (
-                gen_info.find("div", {"class": "codetail"})
-                .find("h1")
-                .find("a")
-                .get("href")
-            )
-            page_data["company_type"] = (
-                gen_info.find("div", {"class": "codetail"})
-                .find("p")
-                .findAll("span")[2]
-                .text.strip()
-            )
-            page_data["location"] = (
-                gen_info.find("p", {"class": "addrline"}).text.split("|")[0].strip()
-            )
-            page_data["telephone"] = gen_info.find(
-                "a", {"data-conversion_action": "Call"}
-            ).get("href")
+            try:
+                page_data["company_name"] = (
+                    gen_info.find("div", {"class": "codetail"})
+                    .find("h1")
+                    .find("a")
+                    .text.strip()
+                )
+            except Exception as e:
+                pass
+            try:
+                page_data["company_url"] = (
+                    gen_info.find("div", {"class": "codetail"})
+                    .find("h1")
+                    .find("a")
+                    .get("href")
+                )
+            except Exception as e:
+                pass
+            try:
+                page_data["company_type"] = (
+                    gen_info.find("div", {"class": "codetail"})
+                    .find("p")
+                    .findAll("span")[2]
+                    .text.strip()
+                )
+            except Exception as e:
+                pass
+            try:
+                page_data["location"] = (
+                    gen_info.find("p", {"class": "addrline"}).text.split("|")[0].strip()
+                )
+            except Exception as e:
+                pass
+            try:
+                page_data["telephone"] = gen_info.find(
+                    "a", {"data-conversion_action": "Call"}
+                ).get("href")
+            except Exception as e:
+                pass
 
             ################# Business Description ####################
             business_desc = soup.find("div", {"id": "copro_description"})
-            page_data["product_description"] = business_desc.find(
-                "div", {"id": "copro_pdm"}
-            ).text.strip()
-            page_data["about_company"] = business_desc.find(
-                "div", {"id": "copro_about"}
-            ).text.strip()
+            try:
+                page_data["product_description"] = business_desc.find(
+                    "div", {"id": "copro_pdm"}
+                ).text.strip()
+            except Exception as e:
+                pass
+            try:
+                page_data["about_company"] = business_desc.find(
+                    "div", {"id": "copro_about"}
+                ).text.strip()
+            except Exception as e:
+                pass
 
             ################# Products and Services/Brands ####################
             prod_serv = soup.find("div", {"id": "copro_prodserv"})
@@ -195,7 +217,9 @@ class ThomasnetScraper:
             self.add_url_to_success_list(row[0], row[1])
         except Exception as e:
             self.add_url_to_failed_list(row[0], row[1])
-            print(f"Error scraping page\n{e}\n{row[1]}")
+            print(
+                f"Error scraping page {row[1]}\n{e}",
+            )
 
     def load_data(
         self,
