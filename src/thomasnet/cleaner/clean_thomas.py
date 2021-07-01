@@ -24,7 +24,15 @@ class CleanThomas:
         pass
 
     def run(self):
-        pass
+        try:
+            self.load_data()
+            self.clean_data()
+        except Exception as e:
+            print(
+                f"Error encountered while running the cleaner", traceback.format_exc()
+            )
+        finally:
+            self.save_data()
 
 
 if __name__ == "__main__":
