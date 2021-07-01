@@ -41,3 +41,4 @@ if __name__ == "__main__":
         },
     }
     cleaner = CleanThomas(config=config)
+    cleaner.run()
