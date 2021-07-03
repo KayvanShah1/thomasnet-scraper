@@ -12,7 +12,7 @@ cd thomasnet-scraper
 ## Visit the source
  - [Link to the source](https://www.thomasnet.com/)
  - Find the heading for the product (to be passed as an argument below to run the script)
-    - Locate the heading in the URL after search
+    - Locate the heading in the URL after searchinf for the interested product
     `https://www.thomasnet.com/nsearch.html?cov=NA&heading=21650809&searchsource=suppliers&searchterm=Hydraulic+Cylinders&searchx=true&what=Hydraulic+Cylinders&which=prod`
     - Here the heading is `21650809`
 
