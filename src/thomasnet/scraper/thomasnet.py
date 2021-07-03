@@ -117,6 +117,12 @@ class ThomasnetScraper:
                     .text.strip()
                 )
             except Exception as e:
+                page_data["company_type"] = (
+                    gen_info.find("div", {"class": "codetail"})
+                    .find("p")
+                    .find("span")
+                    .text.strip()
+                )
                 pass
             try:
                 page_data["location"] = (
@@ -260,7 +266,7 @@ class ThomasnetScraper:
         failed_urls_path: str = "",
     ):
         try:
-            if self.master_df == None:
+            if self.master_df is None:
                 self.master_df = pd.DataFrame(self.collected_data)
             else:
                 self.master_df = self.master_df.append(
@@ -270,12 +276,15 @@ class ThomasnetScraper:
                 subset=self.data_columns[0], keep="last", inplace=True
             )
             self.master_df.to_csv(master_data_path, index=False)
+            print(f"Successfully saved data to {master_data_path}")
         except Exception as e:
-            print(f"Error saving data: {e}")
+            print(f"Error saving data: {e}\n{traceback.print_exc()}")
 
         try:
             self.success_urls.to_csv(success_urls_path, index=False)
+            print(f"Successfully saved data to {success_urls_path}")
             self.failed_urls.to_csv(failed_urls_path, index=False)
+            print(f"Successfully saved data to {failed_urls_path}")
         except Exception as e:
             print(f"Error logging URLs: {e}")
 
@@ -287,9 +296,7 @@ class ThomasnetScraper:
                 success_urls_path=self.config["paths"]["success_url_path"],
                 failed_urls_path=self.config["paths"]["failed_url_path"],
             )
-            for _, row in tqdm(
-                self.scraping_list_df.iterrows(), total=self.scraping_list_df.shape[0]
-            ):
+            for row in tqdm(self.scraping_list_df.values.tolist()):
                 self.extract_data(row)
         except Exception as e:
             print(
