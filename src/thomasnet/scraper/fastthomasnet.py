@@ -220,7 +220,7 @@ class FastThomasnetScraper:
                         page_data["year_founded"] = div.find("li").text.strip()
 
             ################# Consolidation of Data ####################
-            result = {"page_data": page_data, "success": False}
+            result = {"page_data": page_data, "success": True}
             print(f"Successfully scraped data from {row[1]}")
         except Exception as e:
             print(
@@ -288,6 +288,11 @@ class FastThomasnetScraper:
         try:
             self.success_urls.to_csv(success_urls_path, index=False)
             print(f"Successfully saved data to {success_urls_path}")
+            self.failed_urls = self.failed_urls[
+                ~self.failed_urls["company_id"].isin(
+                    self.success_urls.company_id.tolist()
+                )
+            ]
             self.failed_urls.to_csv(failed_urls_path, index=False)
             print(f"Successfully saved data to {failed_urls_path}")
         except Exception as e:
@@ -303,7 +308,7 @@ class FastThomasnetScraper:
             )
             pool = Pool(processes=15)
             final_result = pool.map(
-                self.extract_data, self.scraping_list_df.values.tolist()
+                self.extract_data, self.scraping_list_df.values.tolist()[0:100]
             )
             for result in final_result:
                 if result["success"]:
