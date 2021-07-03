@@ -40,7 +40,7 @@ class ThomasConfig:
 
 class Thomas(ThomasConfig):
     def __init__(self, **kwargs):
-        super.__init__(kwargs.get("keyword"), kwargs.get("heading"))
+        super().__init__(keyword=kwargs.get("keyword"), heading=kwargs.get("heading"))
         self.config = self.__json__()
 
     def run(self):
@@ -51,7 +51,7 @@ class Thomas(ThomasConfig):
 
 class FastThomas(ThomasConfig):
     def __init__(self, **kwargs):
-        super.__init__(kwargs.get("keyword"), kwargs.get("heading"))
+        super().__init__(keyword=kwargs.get("keyword"), heading=kwargs.get("heading"))
         self.config = self.__json__()
 
     def run(self):
@@ -83,7 +83,7 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
     if args.fast:
-        scraper = FastThomas(args.keyword, args.heading)
+        scraper = FastThomas(keyword=args.keyword, heading=args.heading)
     else:
-        scraper = Thomas(args.keyword, args.heading)
-    print(scraper)
+        scraper = Thomas(keyword=args.keyword, heading=args.heading)
+    scraper.run()
