@@ -210,8 +210,12 @@ if __name__ == "__main__":
         "keyword": "hydraulic cylinders",
         "heading": 21650809,
         "paths": {
-            "saving_path": "data/hydraulic_cylinders/hydraulic_cylinders_suppliers_metadata.csv",
-            "reference_url_path": "data/hydraulic_cylinders/hydraulic_cylinders_suppliers_urls.csv",
+            "saving_path": "data/hydraulic_cylinders/hc_suppliers_metadata.csv",
+            "reference_url_path": "data/hydraulic_cylinders/hc_suppliers_urls.csv",
+            "success_url_path": "data/hydraulic_cylinders/success_url.csv",
+            "failed_url_path": "data/hydraulic_cylinders/failed_url.csv",
+            "master_data_path": "data/hydraulic_cylinders/hc_master_data.csv",
+            "cleaned_data_path": "data/hydraulic_cylinders/hc_clean_data.csv",
         },
     }
     scraper = ThomasnetMetaDataScraper(config=config)
