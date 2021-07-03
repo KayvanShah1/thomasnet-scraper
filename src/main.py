@@ -15,23 +15,49 @@ except ImportError as e:
     print(e)
 
 
-def create_path_config(keyword: str, heading: int):
-    keyword = keyword.lower()
-    headdir = keyword.replace(" ", "_")
-    abbr = "".join([i[0] for i in keyword.split("_")])
-    config = {
-        "keyword": keyword,
-        "heading": heading,
-        "paths": {
-            "saving_path": f"data/{headdir}/{abbr}_suppliers_metadata.csv",
-            "reference_url_path": f"data/{headdir}/{abbr}_suppliers_urls.csv",
-            "success_url_path": f"data/{headdir}/success_url.csv",
-            "failed_url_path": f"data/{headdir}/failed_url.csv",
-            "master_data_path": f"data/{headdir}/{abbr}_master_data.csv",
-            "cleaned_data_path": f"data/{headdir}/{abbr}_clean_data.csv",
-        },
-    }
-    return config
+class ThomasConfig:
+    def __init__(self, **kwargs):
+        self.heading: int = kwargs.get("heading")
+        self.keyword: str = kwargs.get("keyword").lower()
+        self.headdir = self.keyword.replace(" ", "_")
+        self.abbr = "".join([i[0] for i in self.headdir.split("_")])
+
+    def __json__(self):
+        config = {
+            "keyword": self.keyword,
+            "heading": self.heading,
+            "paths": {
+                "saving_path": f"data/{self.headdir}/{self.abbr}_suppliers_metadata.csv",
+                "reference_url_path": f"data/{self.headdir}/{self.abbr}_suppliers_urls.csv",
+                "success_url_path": f"data/{self.headdir}/success_url.csv",
+                "failed_url_path": f"data/{self.headdir}/failed_url.csv",
+                "master_data_path": f"data/{self.headdir}/{self.abbr}_master_data.csv",
+                "cleaned_data_path": f"data/{self.headdir}/{self.abbr}_clean_data.csv",
+            },
+        }
+        return config
+
+
+class Thomas(ThomasConfig):
+    def __init__(self, **kwargs):
+        super.__init__(kwargs.get("keyword"), kwargs.get("heading"))
+        self.config = self.__json__()
+
+    def run(self):
+        ThomasnetMetaDataScraper(self.config)
+        ThomasnetScraper(self.config)
+        CleanThomas(self.config)
+
+
+class FastThomas(ThomasConfig):
+    def __init__(self, **kwargs):
+        super.__init__(kwargs.get("keyword"), kwargs.get("heading"))
+        self.config = self.__json__()
+
+    def run(self):
+        ThomasnetFastMetaDataScraper(self.config)
+        FastThomasnetScraper(self.config)
+        CleanThomas(self.config)
 
 
 if __name__ == "__main__":
@@ -39,10 +65,25 @@ if __name__ == "__main__":
         prog="Thomasnet Data Scraper",
         description="Scrape Suppliers Data from Thomasnet website",
     )
-    parser.add_argument("--keyword", help="Product Name", type=str, required=True)
     parser.add_argument(
-        "--heading", help="Heading for product from website", type=int, required=True
+        "-k", "--keyword", help="Product Name to search", type=str, required=True
+    )
+    parser.add_argument(
+        "-hd",
+        "--heading",
+        help="Heading for the product from website",
+        type=int,
+        required=True,
+    )
+    parser.add_argument(
+        "-f",
+        "--fast",
+        action="store_true",
+        help="Fast Scraping",
     )
     args = parser.parse_args()
-
-    print(args.keyword, args.heading)
+    if args.fast:
+        scraper = FastThomas(args.keyword, args.heading)
+    else:
+        scraper = Thomas(args.keyword, args.heading)
+    print(scraper)
