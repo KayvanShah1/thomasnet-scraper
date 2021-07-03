@@ -1,6 +1,5 @@
 import time
 import traceback
-from tqdm import tqdm
 
 from multiprocessing import Pool
 
