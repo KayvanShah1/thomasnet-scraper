@@ -46,7 +46,7 @@ optional arguments:
 ```
 ### Example
 ```bash
-py src/main.py -k "hydraulic cylinder" -h 21650809
+py src/main.py -k "hydraulic cylinder" -hd 21650809 -f
 ```
 
 ### Note
