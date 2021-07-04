@@ -102,6 +102,9 @@ class FastThomasnetScraper:
                     .text.strip()
                 )
             except Exception as e:
+                page_data["company_name"] = (
+                    gen_info.find("div", {"class": "codetail"}).find("h1").text.strip()
+                )
                 pass
             try:
                 page_data["company_url"] = (
