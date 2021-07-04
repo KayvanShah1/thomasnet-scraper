@@ -51,6 +51,7 @@ py src/main.py -k "hydraulic cylinder" -h 21650809
 
 ### Note
 - Find the data exported in *CSV files* in **data** folder
+- The data of your interest is *{abc}_clean_data.csv*
 
 ### Any problems or bugs to be reported
 - Create an issue [here](https://github.com/KayvanShah1/thomasnet-scraper/issues)
