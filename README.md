@@ -17,7 +17,7 @@ pip install -r requirements.txt
 
 ## Visit the source
 <div align='center'>
-  <img src='https://qusathermal.com/wp-content/uploads/2018/06/Thomas_Net_Logo_Simple_2_SMALL.jpg'></img>
+  <img src='https://cdn40.thomasnet.com/img40/og-thomas-for-industry.jpg'></img>
 </div>
 
  - [Link to the source](https://www.thomasnet.com/)
