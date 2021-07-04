@@ -244,6 +244,7 @@ class ThomasnetScraper:
 
         try:
             self.success_urls = pd.read_csv(success_urls_path)
+            self.success_urls.drop_duplicates(inplace=True)
             print(f"Total successful urls: {self.success_urls.shape[0]}")
         except FileNotFoundError as e:
             print("Success URLs file not found:\n", e)
@@ -251,6 +252,7 @@ class ThomasnetScraper:
 
         try:
             self.failed_urls = pd.read_csv(failed_urls_path)
+            self.failed_urls.drop_duplicates(inplace=True)
             print(f"Total failed urls: {self.failed_urls.shape[0]}")
         except FileNotFoundError as e:
             print("Failed URLs file not found:\n", e)
