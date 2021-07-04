@@ -44,9 +44,9 @@ class Thomas(ThomasConfig):
         self.config = self.__json__()
 
     def run(self):
-        ThomasnetMetaDataScraper(config=self.config)
-        ThomasnetScraper(config=self.config)
-        CleanThomas(config=self.config)
+        ThomasnetMetaDataScraper(config=self.config).run()
+        ThomasnetScraper(config=self.config).run()
+        CleanThomas(config=self.config).run()
 
 
 class FastThomas(ThomasConfig):
@@ -55,9 +55,9 @@ class FastThomas(ThomasConfig):
         self.config = self.__json__()
 
     def run(self):
-        ThomasnetFastMetaDataScraper(config=self.config)
-        FastThomasnetScraper(config=self.config)
-        CleanThomas(config=self.config)
+        ThomasnetFastMetaDataScraper(config=self.config).run()
+        FastThomasnetScraper(config=self.config).run()
+        CleanThomas(config=self.config).run()
 
 
 if __name__ == "__main__":
