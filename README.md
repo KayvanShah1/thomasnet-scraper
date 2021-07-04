@@ -58,3 +58,6 @@ py src/main.py -k "hydraulic cylinder" -hd 21650809 -f
 
 ## Documentation
 - For more details about the scraping process read the [WIKI documentation](https://github.com/KayvanShah1/thomasnet-scraper/wiki)
+
+## Author and Developer:
+***Kayvan Shah*** - Data Engineer | NLP | ML/DL Enthusiast
