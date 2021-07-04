@@ -1,4 +1,4 @@
-# Thomasnet Hardware Suppliers Data
+# Thomasnet Hardware Suppliers Data Scraper
 
 ## Clone the repository
 ```bash
@@ -8,21 +8,33 @@ Enter into the repository's root directory
 ```bash
 cd thomasnet-scraper
 ```
+Create a virtual environment and install the dependencies
+```bash
+python -m venv ENV
+source ENV/bin/activate
+pip install -r requirements.txt
+```
 
 ## Visit the source
+<div align='center'>
+  <img src='https://qusathermal.com/wp-content/uploads/2018/06/Thomas_Net_Logo_Simple_2_SMALL.jpg'></img>
+</div>
+
  - [Link to the source](https://www.thomasnet.com/)
  - Find the heading for the product (to be passed as an argument below to run the script)
-    - Locate the heading in the URL after searchinf for the interested product
-    `https://www.thomasnet.com/nsearch.html?cov=NA&heading=21650809&searchsource=suppliers&searchterm=Hydraulic+Cylinders&searchx=true&what=Hydraulic+Cylinders&which=prod`
+    - Locate the heading in the URL after searching for the interested product
+    ```
+    https://www.thomasnet.com/nsearch.html?cov=NA&heading=21650809&searchsource=suppliers&searchterm=Hydraulic+Cylinders&searchx=true&what=Hydraulic+Cylinders&which=prod
+    ```
     - Here the heading is `21650809`
 
-## Get started
+## Getting started
 ### Help
 ```
-> py src/main.py -h                             
+/thomasnet-scraper> py src/main.py -h                             
 usage: Thomasnet Data Scraper [-h] -k KEYWORD -hd HEADING [-f]
 
-Scrape Suppliers Data from Thomasnet website
+Scrape Suppliers Data from Thomas website
 
 optional arguments:
   -h, --help            show this help message and exit
