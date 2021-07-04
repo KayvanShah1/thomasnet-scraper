@@ -307,7 +307,7 @@ class FastThomasnetScraper:
             )
             pool = Pool(processes=15)
             final_result = pool.map(
-                self.extract_data, self.scraping_list_df.values.tolist()[0:100]
+                self.extract_data, self.scraping_list_df.values.tolist()
             )
             for result in final_result:
                 if result["success"]:
