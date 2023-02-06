@@ -1,7 +1,7 @@
 appdirs==1.4.4
 backcall==0.2.0
 beautifulsoup4==4.9.3
-black==21.6b0
+black==23.1.0
 certifi==2021.5.30
 chardet==4.0.0
 click==8.0.1
